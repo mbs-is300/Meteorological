@@ -25,9 +25,7 @@ class Weather: UIViewController {
                              "wind_speed_10m:ms",
                       "wind_dir_10m:d",
                       "weather_symbol_1h:idx"]
-    
-    //var latitude = [21.48817996],   longitude = [39.18094995]
-    
+        
     static var user = "x_alsallami",    password = "F52mtiM0Vz"
     
     struct dayWeather {
@@ -79,17 +77,12 @@ class Weather: UIViewController {
 
             let day_url = URL(string: dayWeather.image_path!)
             
-            Task {
-                await getImage(url: day_url!) { image in
-                    print("add day img")
-
+            DispatchQueue.main.async {
+                
+                Utilities.getImage(url: day_url!) { image in
                     dayWeather.image.append(image!)
                 }
             }
-            
-        }
-        Task {
-            //self.setupTable()
         }
     }
     
@@ -122,43 +115,10 @@ class Weather: UIViewController {
             let hour_url = URL(string: hourWeather.image_path!)
             print("hour img url: \(hour_url!.absoluteString)")
             Coordinate_Information_ViewController.img_url = hour_path
-            getHourImage(url: hour_url!) { image in
-                print("add hour img")
+            
+            Utilities.getImage(url: hour_url!) { image in
                 hourWeather.image.append(image!)
             }
-            
         }
-        Task {
-            //self.setupTable()
-        }
-        
-    }
-    
-}
-
-
-
-extension Weather {
-    
-    // MARK: - Helpers
-    
-    static func getImage(url: URL, completion: @escaping (UIImage?) -> Void) async {
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let data = data, let img = UIImage(data: data) {
-                completion(img)
-            } else {
-                completion(nil)
-            }
-        }.resume()
-    }
-    
-    static func getHourImage(url: URL, completion: @escaping (UIImage?) -> Void) {
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let data = data, let img = UIImage(data: data) {
-                completion(img)
-            } else {
-                completion(nil)
-            }
-        }.resume()
     }
 }
